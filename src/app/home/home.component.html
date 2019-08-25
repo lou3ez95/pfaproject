@@ -1,0 +1,72 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=block" rel="stylesheet">
+<mat-horizontal-stepper linear #stepper>
+  <mat-step [stepControl]="paternControl" errorMessage="patern is required.">
+    <ng-template matStepLabel>Favorite patern</ng-template>
+    <mat-form-field>
+     <mat-select placeholder="Favorite patern" [(ngModel)]="selectedValue" [formControl]="paternControl" required>
+      <mat-option>--</mat-option>
+      <mat-option *ngFor="let patern of paterns" [value]="patern">
+       {{patern.name}}
+      </mat-option>
+     </mat-select>
+    <mat-error *ngIf="paternControl.hasError('required')">Please choose a patern</mat-error>
+   </mat-form-field>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup" errorMessage="file is required.">
+	    <ng-template matStepLabel>upload file</ng-template>
+       <form [formGroup]="secondFormGroup" (ngSubmit)="uploadSubmit()">
+        <mat-card-content>
+          <br>
+          <input formControlName="document" type="file" name="image" ng2FileSelect accept=".csv" [uploader]="uploader"/><br/>
+          <br>
+          <mat-error *ngIf="secondFormGroup.hasError('required')">Please choose a file</mat-error>
+          <div class="drop-zone">
+          <div ng2FileDrop [uploader]="uploader"  class="drop-zone">
+             Drag and drop files to upload
+          </div>
+          </div>
+          <table>
+            <thead>
+            <tr>
+              <th width="90%">
+                File Name
+              </th>
+              <th width="10%">
+                Remove
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of uploader.queue">
+              <th width="90%">
+                {{ item.file.name}}({{item.file.size/1000000}} MB)
+              </th>
+              <th class="text-center" width="10%">
+                <mat-icon (click)="item.remove()">delete</mat-icon>
+              </th>
+            </tr>
+            </tbody>
+          </table>
+          <br>
+          <button mat-raised-button color="primary" [disabled]="!secondFormGroup.valid" type="submit">Upload Data</button>
+        </mat-card-content>
+       </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>you're almost done, please wait a minutes to complete your submit<br></p>
+    
+    <div> 
+      <button mat-raised-button color="primary" (click)="myFunc(selectedValue.name)">Submit</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
+<ng-http-loader
+    [backdrop]="false"
+    [backgroundColor]="'#4B0082'"
+    [debounceDelay]="100"
+    [extraDuration]="300"
+    [minDuration]="300"
+    [opacity]=".3"
+    spinner="sk-three-bounce">
+</ng-http-loader>
